@@ -1,5 +1,8 @@
 plugins { id("com.android.application") }
 
+// CI では環境変数の鍵で署名。未設定ならローカルの debug.keystore を使う (どちらも同じ鍵)
+val ksFile = System.getenv("SIGNING_KEYSTORE_FILE")
+
 android {
     namespace = "com.hosig.linebrowser"
     compileSdk = 36
@@ -7,13 +10,25 @@ android {
         applicationId = "com.hosig.linebrowser"
         minSdk = 29
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = System.getenv("VERSION_CODE")?.toInt() ?: 1
+        versionName = System.getenv("VERSION_NAME") ?: "1.0"
+    }
+    signingConfigs {
+        create("release") {
+            if (ksFile != null) {
+                storeFile = file(ksFile)
+                storePassword = System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias = System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword = System.getenv("SIGNING_KEY_PASSWORD")
+            } else {
+                initWith(getByName("debug"))
+            }
+        }
     }
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {

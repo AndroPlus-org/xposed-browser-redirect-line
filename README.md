@@ -10,7 +10,7 @@ LINE のメッセージ内リンクを、アプリ内ブラウザではなく**�
 
 ## ダウンロード
 
-[Releases ページ](https://github.com/AndroPlus-org/xposed-browser-redirect-line/releases/latest) から最新の `app-release.apk` をダウンロードしてください。
+[Releases ページ](https://github.com/AndroPlus-org/xposed-browser-redirect-line/releases/latest) から最新の APK (`line-external-browser-vX.X.apk` 、v1.0 のみ `app-release.apk`) をダウンロードしてください。
 
 ## インストール手順
 
@@ -34,3 +34,14 @@ JDK 17 以上と Android SDK (compileSdk 36) が必要です。
 ```
 
 APK は `app/build/outputs/apk/release/app-release.apk` に出力されます。
+
+## リリース方法
+
+`v*` 形式のタグを push すると、GitHub Actions が Actions secrets の鍵で署名した APK をビルドし、リリースを作成します。
+
+```bash
+git tag v1.1
+git push origin v1.1
+```
+
+使用する secrets: `SIGNING_KEYSTORE_BASE64` / `SIGNING_STORE_PASSWORD` / `SIGNING_KEY_ALIAS` / `SIGNING_KEY_PASSWORD`
